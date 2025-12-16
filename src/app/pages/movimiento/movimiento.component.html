@@ -1,0 +1,230 @@
+<div class="min-h-screen flex bg-gray-100">
+
+  <!-- SIDEBAR -->
+  <app-sidebar></app-sidebar>
+
+  <!-- CONTENIDO -->
+  <main class="flex-1 p-8">
+
+    <div class="bg-white shadow rounded-lg p-6">
+
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-700">
+          Movimientos de stock
+        </h2>
+<!-- FILTROS -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+  <!-- Producto -->
+  <select
+    [(ngModel)]="filtroProducto"
+    (ngModelChange)="aplicarFiltros()"
+    class="border rounded-lg px-3 py-2 text-sm"
+  >
+    <option [ngValue]="null">Todos los productos</option>
+    <option *ngFor="let p of productos" [ngValue]="p.id">
+      {{ p.nombre }}
+    </option>
+  </select>
+
+  <!-- Usuario -->
+  <select
+    [(ngModel)]="filtroUsuario"
+    (ngModelChange)="aplicarFiltros()"
+    class="border rounded-lg px-3 py-2 text-sm"
+  >
+    <option [ngValue]="null">Todos los usuarios</option>
+    <option *ngFor="let u of usuarios" [ngValue]="u.id">
+      {{ u.nombre }}
+    </option>
+  </select>
+
+  <!-- Fecha desde -->
+  <input
+    type="date"
+    [(ngModel)]="fechaDesde"
+    (change)="aplicarFiltros()"
+    class="border rounded-lg px-3 py-2 text-sm"
+  />
+
+  <!-- Fecha hasta -->
+  <input
+    type="date"
+    [(ngModel)]="fechaHasta"
+    (change)="aplicarFiltros()"
+    class="border rounded-lg px-3 py-2 text-sm"
+  />
+
+</div>
+        <button
+          *ngIf="puedeEditar"
+          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition text-sm"
+          (click)="abrirNuevo()">
+          ➕ Nuevo movimiento
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-gray-700">
+          <thead class="border-b bg-gray-50">
+            <tr>
+              <th class="text-left py-3 px-2">Producto</th>
+              <th class="text-left px-2">Tipo</th>
+              <th class="text-left px-2">Cantidad</th>
+              <th class="text-left px-2">Motivo</th>
+              <th class="text-left px-2">Usuario</th>
+              <th class="text-left px-2">Fecha</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let m of movimientosFiltrados"
+              class="border-b hover:bg-gray-50 transition">
+
+              <td class="py-3 px-2 font-medium">
+                {{ m.producto_nombre  }}
+              </td>
+
+              <td class="px-2">
+                <span
+                  class="px-2 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': m.tipo === 'entrada',
+                    'bg-red-100 text-red-700': m.tipo === 'salida'
+                  }">
+                  {{ m.tipo }}
+                </span>
+              </td>
+
+              <td class="px-2">
+                {{ m.cantidad }}
+              </td>
+
+              <td class="px-2 text-gray-600">
+                {{ m.motivo || '—' }}
+              </td>
+
+              <td class="px-2 text-gray-600">
+                {{ m.usuario_nombre   }}
+              </td>
+
+              <td class="px-2 text-gray-500">
+                {{ m.fecha | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+            </tr>
+
+            <tr *ngIf="movimientos.length === 0">
+              <td colspan="6" class="py-8 text-center text-gray-500">
+                No hay movimientos registrados
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+  <!-- MODAL CREAR MOVIMIENTO -->
+<div
+  *ngIf="modalAbierto"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-semibold text-gray-700">
+        Nuevo movimiento de stock
+      </h3>
+
+      <button
+        class="text-gray-400 hover:text-gray-600"
+        (click)="cerrarModal()">
+        ✕
+      </button>
+    </div>
+
+    <!-- Form -->
+    <div class="space-y-4">
+
+      <!-- Producto -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Producto
+        </label>
+        <select
+          [(ngModel)]="movimiento.producto_id"
+          class="w-full border rounded-lg px-3 py-2 text-sm focus:ring focus:ring-green-200"
+        >
+          <option [ngValue]="null">Seleccione un producto</option>
+          <option *ngFor="let p of productos" [ngValue]="p.id">
+            {{ p.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Tipo -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Tipo de movimiento
+        </label>
+        <select
+          [(ngModel)]="movimiento.tipo"
+          class="w-full border rounded-lg px-3 py-2 text-sm"
+        >
+          <option value="entrada">Entrada</option>
+          <option value="salida">Salida</option>
+        </select>
+      </div>
+
+      <!-- Cantidad -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Cantidad
+        </label>
+        <input
+          type="number"
+          min="1"
+          [(ngModel)]="movimiento.cantidad"
+          class="w-full border rounded-lg px-3 py-2 text-sm"
+          placeholder="Cantidad"
+        />
+      </div>
+
+      <!-- Motivo -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">
+          Motivo (opcional)
+        </label>
+        <textarea
+          rows="2"
+          [(ngModel)]="movimiento.motivo"
+          class="w-full border rounded-lg px-3 py-2 text-sm"
+          placeholder="Ej: ajuste de stock, compra, venta…"
+        ></textarea>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-3 mt-6">
+      <button
+        class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-sm"
+        (click)="cerrarModal()">
+        Cancelar
+      </button>
+
+      <button
+        *ngIf="puedeEditar"
+        class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 text-sm"
+        (click)="guardarMovimiento()">
+        Guardar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</div>

@@ -1,0 +1,263 @@
+<div class="min-h-screen flex bg-gray-100">
+
+  <app-sidebar></app-sidebar>
+
+  <main class="flex-1 p-8">
+
+  <div class="bg-white shadow rounded-lg p-6">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold text-gray-700">
+        Proveedores
+      </h2>
+
+      <button
+        *ngIf="rol === 'admin'"
+        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition text-sm"
+        (click)="abrirModalNuevo()">
+        ➕ Nuevo proveedor
+      </button>
+    </div>
+
+    <!-- Buscador -->
+    <input
+      type="text"
+      placeholder="Buscar por nombre..."
+      [(ngModel)]="busqueda"
+      class="mb-4 w-64 border rounded-lg px-3 py-2 text-sm"
+    />
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-gray-700">
+        <thead class="border-b bg-gray-50">
+          <tr>
+            <th class="text-left py-3 px-2">Nombre</th>
+            <th class="text-left px-2">Teléfono</th>
+            <th class="text-left px-2">Email</th>
+            <th class="text-left px-2">Dirección</th>
+            <th class="text-left px-2">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let p of proveedoresFiltrados"
+            class="border-b hover:bg-gray-50 transition">
+
+            <td class="py-3 px-2 font-medium">
+              {{ p.nombre }}
+            </td>
+
+            <td class="px-2">
+              {{ p.telefono || '—' }}
+            </td>
+
+            <td class="px-2 text-gray-600">
+              {{ p.email || '—' }}
+            </td>
+
+            <td class="px-2 text-gray-600">
+              {{ p.direccion || '—' }}
+            </td>
+
+            <td class="px-2 space-x-4">
+              <button
+                *ngIf="rol === 'admin'"
+                class="text-blue-600 hover:underline text-sm"
+                (click)="abrirModalEditar(p)">
+                Editar
+              </button>
+
+              <button
+              *ngIf="rol === 'admin'"
+  class="text-red-600 hover:text-red-800"
+  (click)="abrirConfirmacionEliminar(p)"
+>
+  Eliminar
+</button>
+
+            </td>
+          </tr>
+
+          <tr *ngIf="proveedores.length === 0">
+            <td colspan="5" class="py-8 text-center text-gray-500">
+              No hay proveedores registrados
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- MODAL -->
+  <div
+    *ngIf="modalAbierto"
+    class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+
+      <!-- Header modal -->
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-700">
+          {{ editando ? 'Editar proveedor' : 'Nuevo proveedor' }}
+        </h3>
+
+        <button
+          class="text-gray-400 hover:text-gray-600"
+          (click)="cerrarModal()">
+          ✕
+        </button>
+      </div>
+
+      <!-- Form -->
+      <div class="space-y-4">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">
+            Nombre
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="proveedor.nombre"
+            class="w-full border rounded-lg px-3 py-2 text-sm"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">
+            Teléfono
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="proveedor.telefono"
+            class="w-full border rounded-lg px-3 py-2 text-sm"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">
+            Email
+          </label>
+          <input
+            type="email"
+            [(ngModel)]="proveedor.email"
+            class="w-full border rounded-lg px-3 py-2 text-sm"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">
+            Dirección
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="proveedor.direccion"
+            class="w-full border rounded-lg px-3 py-2 text-sm"
+          />
+        </div>
+
+      </div>
+
+      <!-- Footer modal -->
+      <div class="flex justify-end gap-3 mt-6">
+        <button
+          class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-sm"
+          (click)="cerrarModal()">
+          Cancelar
+        </button>
+
+        <button
+          class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 text-sm"
+          (click)="guardar()">
+          Guardar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+</div>
+<!-- MODAL CONFIRMACIÓN ELIMINAR -->
+<div
+  *ngIf="modalConfirmarEliminar"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+
+    <h3 class="text-xl font-semibold text-gray-800 mb-3">
+      ⚠️ Confirmar eliminación
+    </h3>
+
+    <p class="text-gray-600 mb-6">
+      ¿Estás seguro de que querés eliminar el proveedor
+      <span class="font-semibold text-gray-800">
+        {{ proveedorAEliminar?.nombre }}
+      </span>?
+      <br>
+      <span class="text-sm text-red-600">
+        Esta acción no se puede deshacer.
+      </span>
+    </p>
+
+    <div class="flex justify-end gap-3">
+      <button
+        class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+        (click)="cancelarEliminar()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+        (click)="confirmarEliminar()"
+      >
+        Eliminar
+      </button>
+    </div>
+
+  </div>
+</div><!-- ALERTA -->
+<div
+  *ngIf="alertaVisible"
+  class="fixed top-6 right-6 z-50 max-w-sm w-full
+         animate-fade-in-down">
+
+  <div
+    class="flex items-start gap-3 p-4 rounded-xl shadow-lg border"
+    [ngClass]="{
+      'bg-green-50 border-green-200 text-green-800': alertaTipo === 'success',
+      'bg-red-50 border-red-200 text-red-800': alertaTipo === 'error',
+      'bg-yellow-50 border-yellow-200 text-yellow-800': alertaTipo === 'warning'
+    }"
+  >
+    <span class="text-xl">
+      {{
+        alertaTipo === 'success' ? '✅' :
+        alertaTipo === 'error' ? '❌' : '⚠️'
+      }}
+    </span>
+
+    <div class="flex-1">
+      <p class="font-semibold">
+        {{
+          alertaTipo === 'success' ? 'Éxito' :
+          alertaTipo === 'error' ? 'Error' : 'Atención'
+        }}
+      </p>
+      <p class="text-sm mt-1">
+        {{ alertaMensaje }}
+      </p>
+    </div>
+
+    <button
+      class="text-gray-400 hover:text-gray-600"
+      (click)="alertaVisible = false">
+      ✖
+    </button>
+  </div>
+</div>
