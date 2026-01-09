@@ -34,7 +34,7 @@ cargar() {
   this.categoriaService.getAll().subscribe({
     next: res => {
      
-      this.categorias = res.data;  // ⬅️ FIX
+      this.categorias = res.data;  
     },
     error: err => console.error("Error al cargar categorías", err)
   });

@@ -28,7 +28,7 @@ alertaTipo: 'success' | 'error' | 'warning' = 'success';
   modalAbierto = false;
   editando = false;
   puedeEditar = false;
-
+puedeEliminar=false;
   producto: Producto = this.nuevoProducto();
 
   filtroNombre = '';
@@ -56,6 +56,7 @@ productosFiltrados: Producto[] = [];
     console.log('ROL:', rol);
 
     this.puedeEditar = rol === 'admin' || rol === 'empleado';
+    this.puedeEliminar = rol ==='admin';
   }
   abrirConfirmacionEliminar(producto: Producto) {
   this.productoAEliminar = producto;

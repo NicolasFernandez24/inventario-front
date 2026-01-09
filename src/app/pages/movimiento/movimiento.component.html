@@ -155,14 +155,32 @@
           Producto
         </label>
         <select
-          [(ngModel)]="movimiento.producto_id"
-          class="w-full border rounded-lg px-3 py-2 text-sm focus:ring focus:ring-green-200"
-        >
-          <option [ngValue]="null">Seleccione un producto</option>
-          <option *ngFor="let p of productos" [ngValue]="p.id">
-            {{ p.nombre }}
-          </option>
-        </select>
+        name="producto"
+  [(ngModel)]="movimiento.producto_id"
+  (ngModelChange)="onProductoChange()"
+  class="w-full border rounded-lg px-3 py-2 text-sm focus:ring focus:ring-green-200"
+>
+  <option [ngValue]="null">Seleccione un producto</option>
+  <option *ngFor="let p of productos" [ngValue]="p.id">
+    {{ p.nombre }}
+  </option>
+</select>
+<div *ngIf="productoSeleccionado" class="text-sm text-gray-600 mt-2">
+  <p>
+    Stock actual:
+    <span class="font-semibold">
+      {{ productoSeleccionado.stock }}
+    </span>
+  </p>
+
+  <p>
+    Stock mínimo:
+    <span class="font-semibold">
+      {{ productoSeleccionado.stock_minimo }}
+    </span>
+  </p>
+</div>
+
       </div>
 
       <!-- Tipo -->

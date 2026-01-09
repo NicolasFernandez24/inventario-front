@@ -53,7 +53,7 @@ console.log(res.token)
 },
 
       error: () => {
-        this.error = 'Credenciales incorrectas';
+        this.error = 'Email o contraseña incorrectos';
         this.loading = false;
       }
     });

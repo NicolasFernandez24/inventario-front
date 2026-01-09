@@ -35,10 +35,9 @@ export class SidebarComponent implements OnInit {
       this.role = this.user.role as Role;
 
     
-      if (this.role === 'admin') {
-        this.cargarAlertasStock();
-      }
-
+     if (this.role === 'admin' || this.role === 'empleado') {
+  this.cargarAlertasStock();
+}
     } else {
       this.router.navigate(['/login']);
     }

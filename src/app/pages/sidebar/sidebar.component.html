@@ -4,8 +4,9 @@
 
     <h2 class="text-2xl font-bold text-green-700 mb-8">Inventario</h2>
 
-<div *ngIf="role === 'admin' && productosStockBajo.length > 0"
+<div *ngIf="(role === 'admin' || role === 'empleado') && productosStockBajo.length > 0"
      class="mb-6 p-3 bg-red-100 border border-red-300 rounded-lg">
+
 
   <div
     class="flex justify-between items-center cursor-pointer"

@@ -20,7 +20,7 @@ export class MovimientosComponent implements OnInit {
   modalAbierto = false;
 productos: Producto[] = [];
   movimiento: Movimiento = this.movimientoVacio();
-
+productoSeleccionado: any = null;
 movimientosFiltrados: Movimiento[] = [];
 usuarios: { id: number; nombre: string }[] = [];
 filtroProducto: number | null = null;
@@ -51,6 +51,13 @@ cargarProductos() {
     error: err => console.error(err)
   });
 }
+onProductoChange() {
+  const id = Number(this.movimiento.producto_id);
+
+  this.productoSeleccionado =
+    this.productos.find(p => Number(p.id) === id) || null;
+}
+
 cargarUsuarios() {
   this.usuarioService.getAll().subscribe({
     next: res => this.usuarios = res.data ?? res,
