@@ -1,27 +1,66 @@
-# InventarioFront
+# 📦 Sistema de Inventario – Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.3.
+Aplicación web para la gestión de inventario con control de stock, roles de usuario y alertas visuales.  
+Forma parte de un sistema completo orientado a uso real en comercios o pequeñas empresas.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🧩 Funcionalidades principales
 
-## Code scaffolding
+- Autenticación de usuarios
+- Gestión de productos
+- Control de stock con movimientos (entradas / salidas)
+- Alertas visuales por stock bajo
+- Gestión de categorías y proveedores
+- Gestión de usuarios con roles
+- Interfaz responsive y clara
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 👥 Roles de usuario
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **Admin**
+  - Acceso total al sistema
+  - Gestión de usuarios
+  - Visualización de alertas de stock
+- **Empleado**
+  - Gestión de productos y movimientos
+- **Visor**
+  - Acceso de solo lectura
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## 🚨 Alertas de stock
 
-## Running end-to-end tests
+- 🔴 **Stock crítico**: stock menor al mínimo
+- 🟡 **Advertencia**: stock igual o hasta 2 unidades por encima del mínimo
+- Las alertas visibles en el sidebar están disponibles únicamente para el rol **admin**
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## 🛠️ Tecnologías utilizadas
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Angular (Standalone Components)
+- TypeScript
+- Tailwind CSS
+- RxJS
+- Angular HttpClient
+
+---
+
+## 🧠 Decisiones técnicas
+
+- Arquitectura basada en componentes standalone para mayor modularidad
+- Servicios desacoplados para comunicación con el backend
+- Control de permisos desde frontend basado en rol
+- Separación clara entre edición de producto y movimientos de stock
+  - El stock **no puede modificarse directamente** al editar un producto
+  - Todos los cambios de stock deben registrarse mediante movimientos
+
+---
+
+## ▶️ Instalación y ejecución
+
+```bash
+npm install
+ng serve
